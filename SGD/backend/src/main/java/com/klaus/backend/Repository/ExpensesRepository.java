@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import com.klaus.backend.Model.Expenses;
 
 public interface ExpensesRepository extends JpaRepository<Expenses, Long>, JpaSpecificationExecutor<Expenses> {
-    boolean exisexistsByUserUsername(String username);
 }
