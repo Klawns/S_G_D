@@ -3,6 +3,7 @@ package com.klaus.backend.Model;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -32,7 +33,7 @@ public class Expenses {
     @Column(nullable = false)
     private String description;
     @Column(nullable = false)
-    private double amount;
+    private Double amount;
     @Column(nullable = false)
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate date;
@@ -46,5 +47,6 @@ public class Expenses {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     private User user;
 }

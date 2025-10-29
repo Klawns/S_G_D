@@ -1,12 +1,12 @@
 package com.klaus.backend.Repository;
 
-import java.util.List;
-import java.util.UUID;
-
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.klaus.backend.Model.Expenses;
 
-public interface ExpensesRepository extends JpaRepository<Expenses, Long> {
-    List<Expenses> findByUserId(UUID userId);
+public interface ExpensesRepository extends JpaRepository<Expenses, Long>, JpaSpecificationExecutor<Expenses> {
+    Page<Expenses> findAllByUserUsername(String username, Pageable pageable);
 }
