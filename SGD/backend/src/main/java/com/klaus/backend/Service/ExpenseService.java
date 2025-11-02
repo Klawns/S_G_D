@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.klaus.backend.DTO.Mapper.ExpenseMapper;
 import com.klaus.backend.DTO.request.ExpensesRequestDTO;
+import com.klaus.backend.Exception.ResourceNotFoundException;
 import com.klaus.backend.Model.Expenses;
 import com.klaus.backend.Model.User;
 import com.klaus.backend.Repository.ExpensesRepository;
@@ -40,7 +41,7 @@ public class ExpenseService {
 
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
             expense.setUser(user);
 
@@ -54,7 +55,7 @@ public class ExpenseService {
     public Expenses updateExpense(Long id, ExpensesRequestDTO req) {
         try {
             Expenses existingExpense = expensesRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Despesa não encontrada"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Despesa", id));
             mapper.updateEntityFromDto(req, existingExpense);
             return expensesRepository.save(existingExpense);
         } catch (Exception e) {
@@ -65,7 +66,7 @@ public class ExpenseService {
     @Transactional
     public void deleteExpense(Long id) {
         Expenses existingExpense = expensesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Despesa não encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Despesa", id));
 
         expensesRepository.delete(existingExpense);
     }

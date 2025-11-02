@@ -3,6 +3,7 @@ package com.klaus.backend.Service;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.klaus.backend.DTO.Mapper.AuthMapper;
 import com.klaus.backend.DTO.request.AuthRequestDTO;
 import com.klaus.backend.DTO.response.AuthResponseDTO;
+import com.klaus.backend.Exception.LoginException;
+import com.klaus.backend.Exception.ResourceAlreadyExistsException;
 import com.klaus.backend.Model.User;
 import com.klaus.backend.Repository.UserRepository;
 import com.klaus.backend.Security.CookieUtil;
@@ -52,8 +55,10 @@ public class AuthService {
 
             return mapper.toDTO(user);
 
+        } catch (AuthenticationException e) {
+            throw new LoginException("Credenciais inválidas. Verifique seu usuário e senha.", e);
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao autenticar", e);
+            throw new RuntimeException("Erro interno durante a autenticação.", e);
         }
     }
 
@@ -65,7 +70,7 @@ public class AuthService {
     @Transactional
     public AuthResponseDTO register(AuthRequestDTO req) {
         if (userRepository.existsByUsername(req.username())) {
-            throw new IllegalArgumentException("User already exists");
+            throw new ResourceAlreadyExistsException("O nome de usuário já está em uso");
         }
 
         User user = mapper.toEntity(req);
